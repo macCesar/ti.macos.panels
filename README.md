@@ -23,7 +23,7 @@ The module is intentionally **Mac Catalyst-only** and returns a unified result c
 
 ## Compatibility
 
-- Titanium SDK: `13.2.0+` (or `13.1.1.GA` with Mac Catalyst module build fixes)
+- **Titanium SDK**: `13.1.1.GA` with Mac Catalyst module fixes (see note below)
 - Module platform: `iphone`
 - Runtime target: `macOS` via Mac Catalyst (`-T macos`)
 - `ios/manifest` must keep `mac: true`
@@ -32,13 +32,17 @@ If called outside Mac Catalyst runtime, methods return `ERR_NOT_SUPPORTED_PLATFO
 
 ### SDK Requirements Note
 
-This module requires `mac: true` in the manifest for Mac Catalyst support. Earlier SDK versions (pre-13.2.0) may require additional fixes to build modules with this flag:
+This module requires `mac: true` in the manifest for Mac Catalyst support. The Titanium SDK 13.1.1.GA includes fixes for building Mac Catalyst **apps**, but building **modules** with `mac: true` requires additional fixes that are pending PR review.
 
-1. **TitaniumKit.xcframework symlink fix** - Mac Catalyst slice needs proper symlinks
+Required fixes for modules with `mac: true`:
+
+1. **TitaniumKit.xcframework symlink fix** - Mac Catalyst slice needs proper symlinks at framework root
 2. **Module template updates** - Templates need `SUPPORTED_PLATFORMS` and `SUPPORTS_MACCATALYST` settings
-3. **Build module auto-fix** - CLI should patch legacy modules with `mac: true`
+3. **Build module auto-fix** - CLI should patch legacy modules with `mac: true` during build
 
-See [MacCatalyst-Fixes.md](https://github.com/appcelerator/titanium-sdk/blob/master/MacCatalyst-Fixes.md) for details on these fixes if using SDK 13.1.1.GA or earlier.
+See [`MacCatalyst-Fixes.md`](https://github.com/tidev/titanium-sdk/blob/master/MacCatalyst-Fixes.md) in the Titanium SDK repository for details on these fixes.
+
+**Future SDK versions**: Once the pending PR is merged, this module will work out-of-the-box with the SDK version that incorporates these fixes (13.1.2+ or 13.2.0+, as decided by TiDev team).
 
 ## Important: Required Entitlements
 
