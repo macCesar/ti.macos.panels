@@ -1,0 +1,19 @@
+#
+# this is your module manifest and used by Titanium
+# during compilation, packaging, distribution, etc.
+#
+version: 1.0.0
+apiversion: 2
+architectures: arm64 x86_64
+mac: true
+description: Native file and folder dialogs for Titanium Mac Catalyst
+author: César Estrada
+license: MIT
+copyright: Copyright (c) 2026 César Estrada
+
+# these should not be edited
+name: ti.macos.panels
+moduleid: ti.macos.panels
+guid: 18254a0c-de55-48b9-8e00-e881d4466d9e
+platform: iphone
+minsdk: 13.2.0
