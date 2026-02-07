@@ -16,4 +16,4 @@ name: ti.macos.panels
 moduleid: ti.macos.panels
 guid: 18254a0c-de55-48b9-8e00-e881d4466d9e
 platform: iphone
-minsdk: 13.1.1
+minsdk: 13.2.0
