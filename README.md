@@ -148,6 +148,40 @@ macPanel.saveFile({
 })
 ```
 
+## Screenshots
+
+GitHub will display light or dark screenshots automatically based on your theme.
+
+### `pickFolder`
+
+![pickFolder (Light)](documentation/images/light-mode/pickFolder.png#gh-light-mode-only)
+![pickFolder (Dark)](documentation/images/dark-mode/pickFolder.png#gh-dark-mode-only)
+
+### `pickFile`
+
+![pickFile (Light)](documentation/images/light-mode/pickFile.png#gh-light-mode-only)
+![pickFile (Dark)](documentation/images/dark-mode/pickFile.png#gh-dark-mode-only)
+
+### `pickFiles`
+
+![pickFiles (Light)](documentation/images/light-mode/pickFiles.png#gh-light-mode-only)
+![pickFiles (Dark)](documentation/images/dark-mode/pickFiles.png#gh-dark-mode-only)
+
+### `openDocument`
+
+![openDocument (Light)](documentation/images/light-mode/openDocument.png#gh-light-mode-only)
+![openDocument (Dark)](documentation/images/dark-mode/openDocument.png#gh-dark-mode-only)
+
+### `openDocuments`
+
+![openDocuments (Light)](documentation/images/light-mode/openDocuments.png#gh-light-mode-only)
+![openDocuments (Dark)](documentation/images/dark-mode/openDocuments.png#gh-dark-mode-only)
+
+### `saveFile`
+
+![saveFile (Light)](documentation/images/light-mode/saveFile.png#gh-light-mode-only)
+![saveFile (Dark)](documentation/images/dark-mode/saveFile.png#gh-dark-mode-only)
+
 ## Read selected files with Ti.Filesystem
 
 `ti.macos.panels` returns paths. File I/O is handled with Titanium `Ti.Filesystem`.
