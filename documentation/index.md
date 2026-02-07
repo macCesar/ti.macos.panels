@@ -136,4 +136,4 @@ macPanel.pickFiles({ title: 'Choose files' }, function (result) {
 
 ## License
 
-MIT
+MIT. See [`LICENSE`](LICENSE).
