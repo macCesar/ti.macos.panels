@@ -40,6 +40,8 @@ Required fixes for modules with `mac: true`:
 2. **Module template updates**: Templates need `SUPPORTED_PLATFORMS` and `SUPPORTS_MACCATALYST` settings.
 3. **Build module auto-fix**: CLI should patch legacy modules with `mac: true` during build.
 
+The required Mac Catalyst module fixes are in an open Titanium SDK PR: [tidev/titanium-sdk#14391](https://github.com/tidev/titanium-sdk/pull/14391)
+
 **Future SDK versions**: once the pending PR is merged, this module should work out of the box with the SDK version that includes these fixes (`13.2.0+`, or the version TiDev chooses for release/backport).
 
 ## Required entitlements
