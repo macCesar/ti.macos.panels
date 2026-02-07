@@ -1,25 +1,25 @@
 # ti.macos.panels
 
-Native Titanium module for Mac Catalyst file panels.
+Titanium native module for Mac Catalyst file panels.
 
 ## Description
 
-`ti.macos.panels` provides a clean JavaScript API on top of Apple native panels:
+`ti.macos.panels` wraps Apple native panels with a JavaScript API:
 
-- `NSOpenPanel` for open/select operations
-- `NSSavePanel` for save destination operations
+- `NSOpenPanel` for open/select actions
+- `NSSavePanel` for save destination actions
 
-The module is intentionally **Mac Catalyst-only** and returns a unified result contract with standardized error codes across all methods.
+The module only supports Mac Catalyst and uses one shared result contract with consistent `ERR_*` codes across methods.
 
 ## Features
 
-- Folder, file, and multi-file selection
-- Document-oriented aliases (`openDocument`, `openDocuments`)
+- Select one folder, one file, or many files
+- Document-named variants (`openDocument`, `openDocuments`)
 - Save destination picker (`saveFile`)
-- Shared callback result shape for all APIs
-- Formal `ERR_*` error catalog
-- Option validation (including invalid path/type handling)
-- File filters via extensions and UTType identifiers
+- Same callback result shape for every API
+- Standard `ERR_*` error catalog
+- Option validation (including invalid path/type checks)
+- File filters with extensions and UTType identifiers
 
 ## Compatibility
 
@@ -28,25 +28,25 @@ The module is intentionally **Mac Catalyst-only** and returns a unified result c
 - Runtime target: `macOS` via Mac Catalyst (`-T macos`)
 - `ios/manifest` must keep `mac: true`
 
-If called outside Mac Catalyst runtime, methods return `ERR_NOT_SUPPORTED_PLATFORM`.
+If you call this outside Mac Catalyst runtime, methods return `ERR_NOT_SUPPORTED_PLATFORM`.
 
-### SDK Requirements Note
+### SDK requirements note
 
-This module requires `mac: true` in the manifest for Mac Catalyst support. The Titanium SDK 13.1.1.GA includes fixes for building Mac Catalyst **apps**, but building **modules** with `mac: true` requires additional fixes (currently provided by a local/fork SDK build until PR merge).
+This module needs `mac: true` in the manifest for Mac Catalyst support. Titanium SDK `13.1.1.GA` includes fixes for building Mac Catalyst **apps**, but building **modules** with `mac: true` still needs extra fixes (currently provided by a local/fork SDK build until PR merge).
 
 Required fixes for modules with `mac: true`:
 
-1. **TitaniumKit.xcframework symlink fix** - Mac Catalyst slice needs proper symlinks at framework root
-2. **Module template updates** - Templates need `SUPPORTED_PLATFORMS` and `SUPPORTS_MACCATALYST` settings
-3. **Build module auto-fix** - CLI should patch legacy modules with `mac: true` during build
+1. **TitaniumKit.xcframework symlink fix**: Mac Catalyst slice needs correct symlinks at the framework root.
+2. **Module template updates**: Templates need `SUPPORTED_PLATFORMS` and `SUPPORTS_MACCATALYST` settings.
+3. **Build module auto-fix**: CLI should patch legacy modules with `mac: true` during build.
 
-See [`MacCatalyst-Fixes.md`](https://github.com/tidev/titanium-sdk/blob/master/MacCatalyst-Fixes.md) in the Titanium SDK repository for details on these fixes.
+See [`MacCatalyst-Fixes.md`](https://github.com/tidev/titanium-sdk/blob/master/MacCatalyst-Fixes.md) in the Titanium SDK repo for details.
 
-**Future SDK versions**: Once the pending PR is merged, this module will work out-of-the-box with the SDK version that incorporates these fixes (`13.2.0+`, or the version selected by TiDev for release/backport).
+**Future SDK versions**: once the pending PR is merged, this module should work out of the box with the SDK version that includes these fixes (`13.2.0+`, or the version TiDev chooses for release/backport).
 
-## Important: Required Entitlements
+## Required entitlements
 
-`example/app.js` is only a UI trigger for the module APIs. It will not work correctly unless the **consumer app** has file entitlements in `tiapp.xml`.
+`example/app.js` is only a UI trigger for module APIs. It will not work as expected unless the **consumer app** includes file entitlements in `tiapp.xml`.
 
 Minimum required:
 
@@ -61,11 +61,11 @@ Minimum required:
 </ios>
 ```
 
-Without this, dialogs can open but selected paths may not be usable for read/write in your app.
+Without this, dialogs can open, but selected paths may not be usable for read/write.
 
 ## Installation
 
-### 1) Build the module
+### 1. Build the module
 
 ```bash
 cd ios
@@ -76,9 +76,9 @@ Generated package:
 
 - `ios/dist/ti.macos.panels-iphone-1.0.0.zip`
 
-### 2) Install module in your Titanium app
+### 2. Install module in your Titanium app
 
-Add to your app `tiapp.xml`:
+Add this to your app `tiapp.xml`:
 
 ```xml
 <modules>
@@ -88,7 +88,7 @@ Add to your app `tiapp.xml`:
 
 Install/unpack the built module zip into your Titanium modules path (or your app-local `modules/iphone/...` layout).
 
-### 3) Add Mac entitlements in app `tiapp.xml` (required)
+### 3. Add Mac entitlements in app `tiapp.xml` (required)
 
 Minimum recommended:
 
@@ -103,7 +103,7 @@ Minimum recommended:
 </ios>
 ```
 
-Optional entitlements depending on your app behavior:
+Optional entitlements depending on app behavior:
 
 - `com.apple.security.files.user-selected.read-only`
 - `com.apple.security.files.downloads.read-write`
@@ -143,14 +143,14 @@ macPanel.saveFile({
     return
   }
 
-  // saveFile only chooses destination; your app writes content.
+  // saveFile only picks a destination; your app writes the content.
   Ti.Filesystem.getFile(result.path).write('Generated by ti.macos.panels')
 })
 ```
 
-## Read Selected Files with Ti.Filesystem
+## Read selected files with Ti.Filesystem
 
-`ti.macos.panels` returns paths. File I/O is done with Titanium `Ti.Filesystem`.
+`ti.macos.panels` returns paths. File I/O is handled with Titanium `Ti.Filesystem`.
 
 Single file:
 
@@ -178,31 +178,47 @@ macPanel.pickFiles({ title: 'Choose files' }, function (result) {
 })
 ```
 
-## API Reference
+## API reference
 
 ### `pickFolder(options?, callback?)`
 
-Single folder selection (`NSOpenPanel`).
+Selects one folder (`NSOpenPanel`).
 
 ### `pickFile(options?, callback?)`
 
-Single file selection (`NSOpenPanel`).
+Selects one file (`NSOpenPanel`).
 
 ### `pickFiles(options?, callback?)`
 
-Multi-file selection (`NSOpenPanel`), controlled by `allowMultiple` (default `true`).
+Selects multiple files (`NSOpenPanel`), controlled by `allowMultiple` (default `true`).
 
 ### `openDocument(options?, callback?)`
 
-Document-style alias for single file open (`NSOpenPanel`).
+Same behavior as `pickFile`, with `selectionType: "document"` in the result.
 
 ### `openDocuments(options?, callback?)`
 
-Document-style alias for multi-file open (`NSOpenPanel`).
+Same behavior as `pickFiles`, but always with multi-selection enabled and `selectionType: "documents"`.
 
 ### `saveFile(options?, callback?)`
 
-Save destination selector (`NSSavePanel`).
+Selects save destination (`NSSavePanel`).
+
+### Alias behavior
+
+These aliases are naming conveniences for intent; native behavior and options stay the same.
+
+- `pickFile` and `openDocument` use the same `NSOpenPanel` flow, with the same options and validation.
+- `pickFiles` and `openDocuments` use that same flow too.
+
+The main difference is naming and the `selectionType` value in the result.
+
+- `pickFile` returns `selectionType: "file"`, while `openDocument` returns `selectionType: "document"`.
+- `pickFiles` returns `selectionType: "files"`, while `openDocuments` returns `selectionType: "documents"`.
+- `openDocuments` always enables multi-selection.
+- `pickFiles` can enable or disable multi-selection with `allowMultiple`.
+
+These variants exist to make intent clearer in app code, not to expose different native behavior.
 
 ## Options
 
@@ -226,7 +242,7 @@ Save panel options:
 - `defaultName: String`
 - `defaultExtension: String`
 
-## Unified Result Contract
+## Unified result contract
 
 All methods return the same object (sync return and callback payload):
 
@@ -246,7 +262,7 @@ All methods return the same object (sync return and callback payload):
 }
 ```
 
-## Error Codes
+## Error codes
 
 - `ERR_NO_SELECTION`
 - `ERR_USER_CANCELLED`
@@ -255,7 +271,7 @@ All methods return the same object (sync return and callback payload):
 - `ERR_NOT_SUPPORTED_PLATFORM`
 - `ERR_INVALID_START_DIRECTORY`
 
-## Build and Test
+## Build and test
 
 Build module package:
 
@@ -289,17 +305,17 @@ xcodebuild -project ti.macos.panels.xcodeproj -scheme ti.macos.panels -configura
 
 ### Panel always cancels or no usable path is returned
 
-- Verify entitlements are set in `tiapp.xml` for user-selected file access.
-- Verify your app is built for `-T macos` (Mac Catalyst runtime).
+- Check that entitlements are set in `tiapp.xml` for user-selected file access.
+- Check that the app is built with `-T macos` (Mac Catalyst runtime).
 
 ### `ERR_INVALID_OPTIONS`
 
-- Ensure option types match contract (string/boolean/string-array).
-- Ensure `directoryURL` points to an existing directory.
+- Make sure option types match the contract (string/boolean/string-array).
+- Make sure `directoryURL` points to an existing directory.
 
 ### Titanium CLI build fails before compile
 
-- If CLI environment fails early, validate native compilation with `xcodebuild` commands shown above.
+- If CLI fails early, validate native compilation with the `xcodebuild` commands above.
 
 ## Contributing
 
@@ -313,7 +329,7 @@ Contributions are welcome.
 
 MIT. See [`LICENSE`](LICENSE).
 
-## Credits and Acknowledgments
+## Credits and acknowledgments
 
 - Built with Titanium SDK and TiDev toolchain.
 - Uses Apple native panel APIs (`NSOpenPanel`, `NSSavePanel`).
