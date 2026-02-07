@@ -23,12 +23,22 @@ The module is intentionally **Mac Catalyst-only** and returns a unified result c
 
 ## Compatibility
 
-- Titanium SDK: `13.2.0+`
+- Titanium SDK: `13.2.0+` (or `13.1.1.GA` with Mac Catalyst module build fixes)
 - Module platform: `iphone`
 - Runtime target: `macOS` via Mac Catalyst (`-T macos`)
 - `ios/manifest` must keep `mac: true`
 
 If called outside Mac Catalyst runtime, methods return `ERR_NOT_SUPPORTED_PLATFORM`.
+
+### SDK Requirements Note
+
+This module requires `mac: true` in the manifest for Mac Catalyst support. Earlier SDK versions (pre-13.2.0) may require additional fixes to build modules with this flag:
+
+1. **TitaniumKit.xcframework symlink fix** - Mac Catalyst slice needs proper symlinks
+2. **Module template updates** - Templates need `SUPPORTED_PLATFORMS` and `SUPPORTS_MACCATALYST` settings
+3. **Build module auto-fix** - CLI should patch legacy modules with `mac: true`
+
+See [MacCatalyst-Fixes.md](https://github.com/appcelerator/titanium-sdk/blob/master/MacCatalyst-Fixes.md) for details on these fixes if using SDK 13.1.1.GA or earlier.
 
 ## Important: Required Entitlements
 
