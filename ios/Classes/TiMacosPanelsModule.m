@@ -775,11 +775,10 @@ static NSString *const TFPCodeInvalidStartDirectory = @"ERR_INVALID_START_DIRECT
   [self dispatchResultObject:result callback:callback];
 }
 
-- (id)dispatchOptionErrorOrValidatedOptionsFromArgs:(id)args
-                                          panel:(NSString *)panel
-                                  selectionType:(NSString *)selectionType
-                                       callback:(KrollCallback *)callback
-                               validatedOptions:(NSDictionary **)validatedOptions
+- (id)optionErrorOrValidatedOptionsFromArgs:(id)args
+                                    panel:(NSString *)panel
+                            selectionType:(NSString *)selectionType
+                         validatedOptions:(NSDictionary **)validatedOptions
 {
   NSString *validationError = nil;
   NSDictionary *options = [self validatedOptionsFromRaw:[self rawOptionsFromArgs:args] errorMessage:&validationError];
@@ -789,7 +788,7 @@ static NSString *const TFPCodeInvalidStartDirectory = @"ERR_INVALID_START_DIRECT
                                                panel:panel
                                        selectionType:selectionType
                                            cancelled:NO];
-    return [self dispatchResultObject:result callback:callback];
+    return result;
   }
 
   if (validatedOptions != NULL) {
@@ -807,13 +806,12 @@ static NSString *const TFPCodeInvalidStartDirectory = @"ERR_INVALID_START_DIRECT
 
   KrollCallback *callback = [self callbackFromArgs:args];
   NSDictionary *options = nil;
-  id validationDispatch = [self dispatchOptionErrorOrValidatedOptionsFromArgs:args
-                                                                        panel:TFPPanelOpen
-                                                                selectionType:@"folder"
-                                                                     callback:callback
-                                                             validatedOptions:&options];
-  if (validationDispatch != nil) {
-    return validationDispatch;
+  id validationError = [self optionErrorOrValidatedOptionsFromArgs:args
+                                                           panel:TFPPanelOpen
+                                                   selectionType:@"folder"
+                                                validatedOptions:&options];
+  if (validationError != nil) {
+    return [self dispatchResultObject:validationError callback:callback];
   }
 
   if (callback != nil) {
@@ -843,13 +841,12 @@ static NSString *const TFPCodeInvalidStartDirectory = @"ERR_INVALID_START_DIRECT
 
   KrollCallback *callback = [self callbackFromArgs:args];
   NSDictionary *options = nil;
-  id validationDispatch = [self dispatchOptionErrorOrValidatedOptionsFromArgs:args
-                                                                        panel:TFPPanelOpen
-                                                                selectionType:@"file"
-                                                                     callback:callback
-                                                             validatedOptions:&options];
-  if (validationDispatch != nil) {
-    return validationDispatch;
+  id validationError = [self optionErrorOrValidatedOptionsFromArgs:args
+                                                           panel:TFPPanelOpen
+                                                   selectionType:@"file"
+                                                validatedOptions:&options];
+  if (validationError != nil) {
+    return [self dispatchResultObject:validationError callback:callback];
   }
 
   if (callback != nil) {
@@ -879,13 +876,12 @@ static NSString *const TFPCodeInvalidStartDirectory = @"ERR_INVALID_START_DIRECT
 
   KrollCallback *callback = [self callbackFromArgs:args];
   NSDictionary *options = nil;
-  id validationDispatch = [self dispatchOptionErrorOrValidatedOptionsFromArgs:args
-                                                                        panel:TFPPanelOpen
-                                                                selectionType:@"files"
-                                                                     callback:callback
-                                                             validatedOptions:&options];
-  if (validationDispatch != nil) {
-    return validationDispatch;
+  id validationError = [self optionErrorOrValidatedOptionsFromArgs:args
+                                                           panel:TFPPanelOpen
+                                                   selectionType:@"files"
+                                                validatedOptions:&options];
+  if (validationError != nil) {
+    return [self dispatchResultObject:validationError callback:callback];
   }
 
   BOOL allowMultiple = YES;
@@ -920,13 +916,12 @@ static NSString *const TFPCodeInvalidStartDirectory = @"ERR_INVALID_START_DIRECT
 
   KrollCallback *callback = [self callbackFromArgs:args];
   NSDictionary *options = nil;
-  id validationDispatch = [self dispatchOptionErrorOrValidatedOptionsFromArgs:args
-                                                                        panel:TFPPanelOpen
-                                                                selectionType:@"document"
-                                                                     callback:callback
-                                                             validatedOptions:&options];
-  if (validationDispatch != nil) {
-    return validationDispatch;
+  id validationError = [self optionErrorOrValidatedOptionsFromArgs:args
+                                                           panel:TFPPanelOpen
+                                                   selectionType:@"document"
+                                                validatedOptions:&options];
+  if (validationError != nil) {
+    return [self dispatchResultObject:validationError callback:callback];
   }
 
   if (callback != nil) {
@@ -956,13 +951,12 @@ static NSString *const TFPCodeInvalidStartDirectory = @"ERR_INVALID_START_DIRECT
 
   KrollCallback *callback = [self callbackFromArgs:args];
   NSDictionary *options = nil;
-  id validationDispatch = [self dispatchOptionErrorOrValidatedOptionsFromArgs:args
-                                                                        panel:TFPPanelOpen
-                                                                selectionType:@"documents"
-                                                                     callback:callback
-                                                             validatedOptions:&options];
-  if (validationDispatch != nil) {
-    return validationDispatch;
+  id validationError = [self optionErrorOrValidatedOptionsFromArgs:args
+                                                           panel:TFPPanelOpen
+                                                   selectionType:@"documents"
+                                                validatedOptions:&options];
+  if (validationError != nil) {
+    return [self dispatchResultObject:validationError callback:callback];
   }
 
   if (callback != nil) {
@@ -992,13 +986,12 @@ static NSString *const TFPCodeInvalidStartDirectory = @"ERR_INVALID_START_DIRECT
 
   KrollCallback *callback = [self callbackFromArgs:args];
   NSDictionary *options = nil;
-  id validationDispatch = [self dispatchOptionErrorOrValidatedOptionsFromArgs:args
-                                                                        panel:TFPPanelSave
-                                                                selectionType:@"save"
-                                                                     callback:callback
-                                                             validatedOptions:&options];
-  if (validationDispatch != nil) {
-    return validationDispatch;
+  id validationError = [self optionErrorOrValidatedOptionsFromArgs:args
+                                                           panel:TFPPanelSave
+                                                   selectionType:@"save"
+                                                validatedOptions:&options];
+  if (validationError != nil) {
+    return [self dispatchResultObject:validationError callback:callback];
   }
 
   if (callback != nil) {
