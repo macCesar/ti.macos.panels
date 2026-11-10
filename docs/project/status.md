@@ -4,7 +4,7 @@ Updated: 2026-11-09
 
 Session by: Codex (GPT-6)
 
-Phase: release preparation on `main`.
+Phase: GitHub draft ready for maintainer review on `main`.
 
 ## Completed work
 
@@ -22,8 +22,20 @@ The README, packaged manual, native project guide, resource guides, QA checklist
 
 ## Release state
 
-The maintainer approved a GitHub draft named `iOS 1.0.1`, using proposed tag `ios-1.0.1`. Commits, a rebuild from the release target, and the draft upload are being prepared. See [release notes](../releases/ios-1.0.1.md).
+[Draft iOS 1.0.1](https://github.com/macCesar/ti.macos.panels/releases/tag/untagged-ebae370ed5312f527be7) is ready with `ti.macos.panels-iphone-1.0.1.zip` attached. The draft uses proposed tag `ios-1.0.1` and targets commit `12d4755b9a3e9418b111af7560f90ef588c9f0ec` on `main`.
+
+The ZIP was rebuilt from that commit using the official Titanium `13.2.0.GA` SDK and Xcode 27.2. Its manifest, archive integrity, native architectures, packaged manual, validation fixture, and metadata exclusions passed verification. GitHub reports the same SHA-256 as the local artifact:
+
+`376a0b7b618ef0a2cb1c8398e1179728105f8fd47d09ae22a09c0cfc94637668`
+
+Three semantic commits contain the release changes:
+
+- `0b9bfd4`: reject invalid options before presenting panels.
+- `b0f2681`: support Xcode 27.2 with the official Titanium 13.2 SDK.
+- `12d4755`: prepare version 1.0.1, documentation, and project notes.
+
+The session-close commit records the draft outcome after the artifact build. The draft's source commit remains `12d4755`. Local verification details are in `ios/build/release-verification-1.0.1.json`; that generated file is ignored by Git.
 
 ## Next step
 
-Create the draft with the rebuilt ZIP, verify its target and attachment, and record its URL and artifact checksum here. Publication remains a maintainer action after reviewing the draft.
+Review the draft and publish it when ready. The draft remains unpublished, and its proposed remote tag has not been created.
