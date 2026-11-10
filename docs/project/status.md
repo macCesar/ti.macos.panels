@@ -4,7 +4,7 @@ Updated: 2026-11-09
 
 Session by: Codex (GPT-6)
 
-Phase: GitHub draft ready for maintainer review on `main`.
+Phase: version 1.0.1 published on GitHub.
 
 ## Completed work
 
@@ -22,7 +22,7 @@ The README, packaged manual, native project guide, resource guides, QA checklist
 
 ## Release state
 
-[Draft iOS 1.0.1](https://github.com/macCesar/ti.macos.panels/releases/tag/untagged-ebae370ed5312f527be7) is ready with `ti.macos.panels-iphone-1.0.1.zip` attached. The draft uses proposed tag `ios-1.0.1` and targets commit `12d4755b9a3e9418b111af7560f90ef588c9f0ec` on `main`.
+[iOS 1.0.1](https://github.com/macCesar/ti.macos.panels/releases/tag/ios-1.0.1) was published with maintainer approval on 2026-11-10 at 05:23:09 UTC (2026-11-09 at 23:23:09 in America/Matamoros). The release includes `ti.macos.panels-iphone-1.0.1.zip`. Remote tag `ios-1.0.1` resolves to commit `12d4755b9a3e9418b111af7560f90ef588c9f0ec` on `main`.
 
 The ZIP was rebuilt from that commit using the official Titanium `13.2.0.GA` SDK and Xcode 27.2. Its manifest, archive integrity, native architectures, packaged manual, validation fixture, and metadata exclusions passed verification. GitHub reports the same SHA-256 as the local artifact:
 
@@ -34,8 +34,8 @@ Three semantic commits contain the release changes:
 - `b0f2681`: support Xcode 27.2 with the official Titanium 13.2 SDK.
 - `12d4755`: prepare version 1.0.1, documentation, and project notes.
 
-The session-close commit records the draft outcome after the artifact build. The draft's source commit remains `12d4755`. Local verification details are in `ios/build/release-verification-1.0.1.json`; that generated file is ignored by Git.
+Follow-up documentation commits record the draft and publication outcomes after the artifact build. The release source commit remains `12d4755`. Local verification details are in `ios/build/release-verification-1.0.1.json`; that generated file is ignored by Git.
 
 ## Next step
 
-Review the draft and publish it when ready. The draft remains unpublished, and its proposed remote tag has not been created.
+Release preparation and publication are complete. No release actions remain for version 1.0.1.
