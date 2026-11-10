@@ -4,12 +4,12 @@ Titanium native module for Mac Catalyst file panels.
 
 ## Description
 
-`ti.macos.panels` wraps Apple native panels with a JavaScript API:
+`ti.macos.panels` wraps Apple native panels and exposes them through a JavaScript API:
 
 - `NSOpenPanel` for open/select actions
 - `NSSavePanel` for save destination actions
 
-The module only supports Mac Catalyst and uses one shared result contract with consistent `ERR_*` codes across methods.
+The module only runs on Mac Catalyst and all methods share the same result contract, including consistent `ERR_*` codes.
 
 ## Features
 
@@ -23,58 +23,95 @@ The module only supports Mac Catalyst and uses one shared result contract with c
 
 ## Compatibility
 
-- **Titanium SDK**: `13.2.0` (local/fork build with Mac Catalyst module fixes; see note below)
+- Minimum Titanium SDK: `13.2.0.GA` (official SDK; `minsdk: 13.2.0`)
 - Module platform: `iphone`
 - Runtime target: `macOS` via Mac Catalyst (`-T macos`)
 - `ios/manifest` must keep `mac: true`
 
-If you call this outside Mac Catalyst runtime, methods return `ERR_NOT_SUPPORTED_PLATFORM`.
+If you call it outside Mac Catalyst runtime, methods return `ERR_NOT_SUPPORTED_PLATFORM`.
 
-### SDK requirements note
+### SDK and Xcode compatibility
 
-This module needs `mac: true` in the manifest for Mac Catalyst support. Titanium SDK `13.1.1.GA` includes fixes for building Mac Catalyst **apps**, but building **modules** with `mac: true` still needs extra fixes (currently provided by a local/fork SDK build until PR merge).
+The official `13.2.0.GA` SDK includes the Catalyst module fixes from [tidev/titanium-sdk#14391](https://github.com/tidev/titanium-sdk/pull/14391). Use that release or a newer SDK.
 
-Required fixes for modules with `mac: true`:
+`ios/titanium.xcconfig` defaults to `TITANIUM_SDK_VERSION = 13.2.0.GA`. This must match the installed SDK directory, including its suffix. `manifest` uses `minsdk: 13.2.0` as the minimum supported Titanium version.
 
-1. **TitaniumKit.xcframework symlink fix**: Mac Catalyst slice needs correct symlinks at the framework root.
-2. **Module template updates**: Templates need `SUPPORTED_PLATFORMS` and `SUPPORTS_MACCATALYST` settings.
-3. **Build module auto-fix**: CLI should patch legacy modules with `mac: true` during build.
+For Xcode 27.2, use `node scripts/build.cjs` from the repository root. The build hook selects an explicit destination for each archive and uses the selected SDK for headers and frameworks. It does not change the globally selected SDK or patch SDK source. The build script also removes Finder metadata from the ZIP. The native deployment target is iOS 15.0 (including its Catalyst equivalent), separate from the Titanium minimum version.
 
-The required Mac Catalyst module fixes are in an open Titanium SDK PR: [tidev/titanium-sdk#14391](https://github.com/tidev/titanium-sdk/pull/14391)
+To select another installed SDK, run `node scripts/build.cjs 14.0.0.fixes`. The host app must also support the lifecycle required by its Apple SDK. See [verification results](QA-CHECKLIST.md#verified-2026-11-09-module-101) for the build and runtime versions tested.
 
-**Future SDK versions**: once the pending PR is merged, this module should work out of the box with the SDK version that includes these fixes (`13.2.0+`, or the version TiDev chooses for release/backport).
+## Entitlements
 
-## Required entitlements
+`ti.macos.panels` opens dialogs and returns paths. Configure file access entitlements in the host app's `tiapp.xml`, according to the locations it needs to read or write.
 
-`example/app.js` is only a UI trigger for module APIs. It will not work as expected unless the **consumer app** includes file entitlements in `tiapp.xml`.
-
-Minimum required:
+Add the host app's entitlements here:
 
 ```xml
+<!-- tiapp.xml of your app -->
 <ios>
   <entitlements>
     <dict>
-      <key>com.apple.security.files.user-selected.read-write</key>
-      <true/>
+      <!-- add entries here -->
     </dict>
   </entitlements>
 </ios>
 ```
 
-Without this, dialogs can open, but selected paths may not be usable for read/write.
+### Access via panel (user-selected paths)
+
+When the user selects a file or folder through `ti.macos.panels`, the module returns its path. A sandboxed app needs this entitlement to read and write the selection:
+
+```xml
+<key>com.apple.security.files.user-selected.read-write</key>
+<true/>
+```
+
+The panel can return a path even when the sandbox prevents `Ti.Filesystem` from reading or writing it. See Apple's [user-selected file access entitlement](https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.security.files.user-selected.read-write).
+
+### Programmatic access to ~/Downloads/ (no panel required)
+
+If your app needs to write to `~/Downloads/` directly, without using any panel, add:
+
+```xml
+<key>com.apple.security.files.downloads.read-write</key>
+<true/>
+```
+
+This entitlement permits a sandboxed app to read and write `~/Downloads/` without opening a panel. See Apple's [Downloads access entitlement](https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.security.files.downloads.read-write).
+
+### Programmatic access to ~/Documents/ (no panel required)
+
+There is no first-class entitlement for `~/Documents/` equivalent to the Downloads one. Use the temporary exception entitlement:
+
+```xml
+<key>com.apple.security.temporary-exception.files.home-relative-path.read-write</key>
+<array>
+  <string>/Documents/</string>
+</array>
+```
+
+This grants read-write access to `~/Documents/` (or a subdirectory) without user interaction. Scope it as narrowly as possible (e.g. `/Documents/MyApp/` instead of `/Documents/`). Apple requires justification for this entitlement on App Store submissions. See [file access temporary exceptions](https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/AppSandboxTemporaryExceptionEntitlements.html#//apple_ref/doc/uid/TP40011195-CH5-SW7).
+
+### Summary table
+
+| Goal                                     | Entitlement needed                | Needs panel? |
+| ---------------------------------------- | --------------------------------- | ------------ |
+| Read/write a file the user picked        | `user-selected.read-write`        | Yes          |
+| Read/write any path the user picked      | `user-selected.read-write`        | Yes          |
+| Write to `~/Downloads/` programmatically | `downloads.read-write`            | No           |
+| Write to `~/Documents/` programmatically | `temporary-exception` (see above) | No           |
 
 ## Installation
 
 ### 1. Build the module
 
 ```bash
-cd ios
-ti build -p ios --build-only --sdk 13.2.0
+node scripts/build.cjs
 ```
 
 Generated package:
 
-- `ios/dist/ti.macos.panels-iphone-1.0.0.zip`
+- `ios/dist/ti.macos.panels-iphone-1.0.1.zip`
 
 ### 2. Install module in your Titanium app
 
@@ -82,15 +119,15 @@ Add this to your app `tiapp.xml`:
 
 ```xml
 <modules>
-  <module platform="iphone" version="1.0.0">ti.macos.panels</module>
+  <module platform="iphone" version="1.0.1">ti.macos.panels</module>
 </modules>
 ```
 
-Install/unpack the built module zip into your Titanium modules path (or your app-local `modules/iphone/...` layout).
+Install or unpack the built module zip into your Titanium modules path (or your app-local `modules/iphone/...` layout).
 
-### 3. Add Mac entitlements in app `tiapp.xml` (required)
+### 3. Add entitlements in app `tiapp.xml`
 
-Minimum recommended:
+At minimum, add `user-selected.read-write` so panel-returned paths are usable:
 
 ```xml
 <ios>
@@ -103,11 +140,7 @@ Minimum recommended:
 </ios>
 ```
 
-Optional entitlements depending on app behavior:
-
-- `com.apple.security.files.user-selected.read-only`
-- `com.apple.security.files.downloads.read-write`
-- `com.apple.security.files.bookmarks.app-scope`
+See [Entitlements](#entitlements) for a full breakdown of which entitlements to add depending on what directories your app accesses.
 
 ## Usage
 
@@ -240,19 +273,13 @@ Selects save destination (`NSSavePanel`).
 
 ### Alias behavior
 
-These aliases are naming conveniences for intent; native behavior and options stay the same.
-
-- `pickFile` and `openDocument` use the same `NSOpenPanel` flow, with the same options and validation.
-- `pickFiles` and `openDocuments` use that same flow too.
-
-The main difference is naming and the `selectionType` value in the result.
+`pickFile` and `openDocument` use the same `NSOpenPanel` flow, options, and validation. The same applies to `pickFiles` and `openDocuments`. The names and the `selectionType` value distinguish the intent:
 
 - `pickFile` returns `selectionType: "file"`, while `openDocument` returns `selectionType: "document"`.
 - `pickFiles` returns `selectionType: "files"`, while `openDocuments` returns `selectionType: "documents"`.
 - `openDocuments` always enables multi-selection.
 - `pickFiles` can enable or disable multi-selection with `allowMultiple`.
 
-These variants exist to make intent clearer in app code, not to expose different native behavior.
 
 ## Options
 
@@ -278,7 +305,7 @@ Save panel options:
 
 ## Unified result contract
 
-All methods return the same object (sync return and callback payload):
+All methods use this result shape for synchronous returns and callback arguments:
 
 ```js
 {
@@ -310,16 +337,16 @@ All methods return the same object (sync return and callback payload):
 Build module package:
 
 ```bash
-cd ios
-ti build -p ios --build-only --sdk 13.2.0
+node scripts/build.cjs
 ```
 
-Run example app (module project example):
+To run the example, install the ZIP in a Classic Titanium host app and copy `example/app.js` and `example/validation-tests.js` into its `Resources` directory. Configure its file access entitlements, then run from the host app directory:
 
 ```bash
-cd ios
-ti build -p ios -T macos --sdk 13.2.0
+ti build -p ios -T macos --sdk 14.0.0.fixes
 ```
+
+For the automated native assertions, call `require('validation-tests').run(require('ti.macos.panels'), result => Ti.API.info(JSON.stringify(result)))` in that Catalyst host.
 
 If you need to validate native slices directly with Xcode:
 
@@ -339,21 +366,25 @@ xcodebuild -project ti.macos.panels.xcodeproj -scheme ti.macos.panels -configura
 
 ### Panel always cancels or no usable path is returned
 
-- Check that entitlements are set in `tiapp.xml` for user-selected file access.
+- Check that `com.apple.security.files.user-selected.read-write` is in `tiapp.xml`.
 - Check that the app is built with `-T macos` (Mac Catalyst runtime).
+
+### Ti.Filesystem can't read/write a path outside the sandbox
+
+The module returns the path. If access is blocked, it is a sandbox entitlement issue in the app. Add the entitlement for the target directory. See the [Entitlements summary table](#summary-table).
 
 ### `ERR_INVALID_OPTIONS`
 
 - Make sure option types match the contract (string/boolean/string-array).
-- Make sure `directoryURL` points to an existing directory.
+- An invalid `directoryURL` returns `ERR_INVALID_START_DIRECTORY`; check that the directory exists.
 
 ### Titanium CLI build fails before compile
 
-- If CLI fails early, validate native compilation with the `xcodebuild` commands above.
+- With Xcode 27.2, use `node scripts/build.cjs` so each archive has an explicit destination.
+- Run `node --test tests/build-hook.test.cjs` to check the build hook.
+- Run `example/validation-tests.js` inside a Catalyst host to check synchronous errors and exactly-once callbacks for all six APIs.
 
 ## Contributing
-
-Contributions are welcome.
 
 - Open an issue with reproducible steps for bugs.
 - Propose API/behavior changes before large refactors.
@@ -367,3 +398,10 @@ MIT. See [`LICENSE`](LICENSE).
 
 - Built with Titanium SDK and TiDev toolchain.
 - Uses Apple native panel APIs (`NSOpenPanel`, `NSSavePanel`).
+
+## Project notes
+
+- [Requirements](docs/project/requirements.md): API and compatibility contract.
+- [Context](docs/project/context.md): code layout, build workflow, and documentation map.
+- [Decisions](docs/project/decisions.md): choices and their reasons.
+- [Status](docs/project/status.md): current work and release state. Read this when resuming work; keep it out of startup imports.

@@ -1,7 +1,6 @@
 Place your assets like PNG files in this directory and they will be packaged
 with your module.
 
-All JavaScript files in the assets directory are IGNORED except if you create a
-file named "ti.macos.panels.js" in this directory in which case it will be
-wrapped by native code, compiled, and used as your module. This allows you to
-run pure JavaScript modules that are pre-compiled.
+JavaScript files in this directory are ignored, except for "ti.macos.panels.js".
+Titanium wraps that file in native code and compiles it as the module, which
+allows a module to use precompiled JavaScript.

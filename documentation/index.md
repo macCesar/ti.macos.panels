@@ -1,6 +1,6 @@
-# ti.macos.panels Module
+# ti.macos.panels
 
-Mac-focused Titanium native module for file panels.
+Titanium module for native file and folder dialogs on Mac Catalyst.
 
 ## Scope
 
@@ -15,21 +15,23 @@ Backed by `NSOpenPanel` and `NSSavePanel`.
 
 ## Requirements
 
-1. Titanium SDK `13.2.0+`
+1. Titanium SDK `13.2.0.GA` or newer
 2. Module platform `iphone` with `mac: true`
-3. Mac Catalyst runtime
+3. Mac Catalyst runtime (native deployment target iOS 15.0 / its Catalyst equivalent)
 4. App entitlements for user-selected file access
 
-## Entitlements (App `tiapp.xml`)
+## Entitlements in the host app
 
-Minimum:
+For a sandboxed app that reads and writes user-selected files:
 
 ```xml
 <key>com.apple.security.files.user-selected.read-write</key>
 <true/>
 ```
 
-## Unified Result
+## Result shape
+
+Without a callback, each method returns a result object. With a callback, it returns `null` or `undefined` and sends the result to the callback once. Invalid options return `ERR_INVALID_OPTIONS` without opening a panel.
 
 All APIs use this shape:
 
@@ -49,7 +51,9 @@ All APIs use this shape:
 }
 ```
 
-## Error Codes
+For a successful multiple selection, read `paths`; `path` is `null` when more than one item is selected.
+
+## Error codes
 
 - `ERR_NOT_SUPPORTED_PLATFORM`
 - `ERR_INVALID_OPTIONS`
@@ -110,9 +114,9 @@ macPanel.saveFile({
 })
 ```
 
-`saveFile()` selects destination only; your app writes the content.
+`saveFile()` selects a destination. Your app writes the content.
 
-## Read Files with Ti.Filesystem
+## Read files with Ti.Filesystem
 
 The module returns file/folder paths. Use `Ti.Filesystem` for read/write:
 
@@ -136,4 +140,4 @@ macPanel.pickFiles({ title: 'Choose files' }, function (result) {
 
 ## License
 
-MIT. See [`LICENSE`](LICENSE).
+MIT. See [`LICENSE`](../LICENSE).

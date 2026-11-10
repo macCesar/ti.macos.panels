@@ -1,8 +1,6 @@
-# ti.macos.panels iOS Module Project
+# ti.macos.panels native project
 
-This folder contains the native iOS module project for `ti.macos.panels`.
-
-## Main docs
+## Documentation
 
 - Full module documentation: [`../README.md`](../README.md)
 - Packaged module docs source: [`../documentation/index.md`](../documentation/index.md)
@@ -10,13 +8,13 @@ This folder contains the native iOS module project for `ti.macos.panels`.
 ## Build
 
 ```bash
-cd ios
-ti build -p ios --build-only --sdk 13.2.0
+cd ..
+node scripts/build.cjs
 ```
 
-Generated package:
+The package is written to this directory, relative to `ios/`:
 
-- `dist/ti.macos.panels-iphone-1.0.0.zip`
+- `dist/ti.macos.panels-iphone-1.0.1.zip`
 
 ## Notes
 
@@ -24,3 +22,5 @@ Generated package:
 - Platform: `iphone`
 - Minimum Titanium SDK: `13.2.0`
 - Catalyst support is enabled via `mac: true` in `manifest`.
+
+The default build SDK is the official `13.2.0.GA`. Pass another installed SDK as an argument to the script. The hook runs during this repository's build and stays out of the module package.
